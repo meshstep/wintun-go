@@ -15,6 +15,8 @@ import (
 	"golang.org/x/sys/windows"
 )
 
+var DisableLog = false
+
 type loggerLevel int
 
 const (
@@ -50,6 +52,9 @@ var (
 
 func setupLogger(dll *lazyDLL) {
 	syscall.Syscall(dll.NewProc("WintunSetLogger").Addr(), 1, windows.NewCallback(func(level loggerLevel, msg *uint16) int {
+		if DisableLog {
+			return 0
+		}
 		log.Println("[Wintun]", windows.UTF16PtrToString(msg))
 		return 0
 	}), 0, 0)

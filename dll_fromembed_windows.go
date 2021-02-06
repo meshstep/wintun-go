@@ -1,4 +1,4 @@
-// +build load_wintun_from_rsrc
+// +build !load_wintun_from_rsrc,!load_wintun_from_rsrc
 
 /* SPDX-License-Identifier: MIT
  *
@@ -14,8 +14,6 @@ import (
 	"unsafe"
 
 	"github.com/meshstep/wintun-go/memmod"
-	"github.com/meshstep/wintun-go/resource"
-	"golang.org/x/sys/windows"
 )
 
 type lazyDLL struct {
@@ -35,16 +33,7 @@ func (d *lazyDLL) Load() error {
 		return nil
 	}
 
-	const ourModule windows.Handle = 0
-	resInfo, err := resource.FindByName(ourModule, d.Name, resource.RT_RCDATA)
-	if err != nil {
-		return fmt.Errorf("Unable to find \"%v\" RCDATA resource: %w", d.Name, err)
-	}
-	data, err := resource.Load(ourModule, resInfo)
-	if err != nil {
-		return fmt.Errorf("Unable to load resource: %w", err)
-	}
-	module, err := memmod.LoadLibrary(data)
+	module, err := memmod.LoadLibrary(ddlContent)
 	if err != nil {
 		return fmt.Errorf("Unable to load library: %w", err)
 	}

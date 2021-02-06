@@ -1,4 +1,4 @@
-// +build !load_wintun_from_rsrc
+// +build load_wintun_from_rsrc
 
 /* SPDX-License-Identifier: MIT
  *
